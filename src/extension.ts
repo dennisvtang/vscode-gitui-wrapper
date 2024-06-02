@@ -1,33 +1,22 @@
+// The module 'vscode' contains the VS Code extensibility API
+// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { openLazygit, openFileHistory, openLog, openLogCurrentFile, openLazygitCurrentFile } from './src/terminal';
+import { openGitui } from './terminal';
 
 
+// This method is called when your extension is activated
+// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  let disposable_lazygit = vscode.commands.registerCommand(
-    "lazygit.lazygit",
-    openLazygit
-  );
-  let disposable_lazygit_log = vscode.commands.registerCommand(
-    "lazygit.log",
-    openLog
-  );
-  let disposable_lazygit_file_history = vscode.commands.registerCommand(
-    "lazygit.file_history",
-    openFileHistory
-  );
-  let disposable_lazygit_log_current_file = vscode.commands.registerCommand(
-    "lazygit.log_repository_current_file",
-    openLogCurrentFile
-  );
-  let disposable_lazygit_current_file = vscode.commands.registerCommand(
-    "lazygit.lazygit_repository_current_file",
-    openLazygitCurrentFile
-  );
-  context.subscriptions.push(disposable_lazygit);
-  context.subscriptions.push(disposable_lazygit_log);
-  context.subscriptions.push(disposable_lazygit_file_history);
-  context.subscriptions.push(disposable_lazygit_log_current_file);
-  context.subscriptions.push(disposable_lazygit_current_file);
+	// The command has been defined in the package.json file
+	// Now provide the implementation of the command with registerCommand
+	// The commandId parameter must match the command field in package.json
+	let disposable_gitui = vscode.commands.registerCommand(
+		'vscode-gitui-wrapper.gitui',
+		openGitui
+	);
+
+	context.subscriptions.push(disposable_gitui);
 }
 
+// This method is called when your extension is deactivated
 export function deactivate() {}

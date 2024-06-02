@@ -1,41 +1,22 @@
-import * as vscode from "vscode";
 import { version } from "os";
-import { API as GitAPI, GitExtension, APIState } from '../typings/git';
+import * as vscode from "vscode";
+import { GitExtension } from '../typings/git';
 
-export async function openLazygit(): Promise<void> {
+export async function openGitui(): Promise<void> {
     if (!(await focusActiveInstance())) {
-        await newLazygit();
+        await newGitui();
     }
     return;
 }
 
-export async function openFileHistory(): Promise<void> {
+
+export async function openGituiCurrentFile(): Promise<void> {
     if (!(await focusActiveInstance())) {
-        await newFileHistory();
+        await newGituiCurrentFile();
     }
     return;
 }
 
-export async function openLog(): Promise<void> {
-    if (!(await focusActiveInstance())) {
-        await newLog();
-    }
-    return;
-}
-
-export async function openLazygitCurrentFile(): Promise<void> {
-    if (!(await focusActiveInstance())) {
-        await newLazygitCurrentFile();
-    }
-    return;
-}
-
-export async function openLogCurrentFile(): Promise<void> {
-    if (!(await focusActiveInstance())) {
-        await newLogCurrentFile();
-    }
-    return;
-}
 
 class GitRepositoryQP implements vscode.QuickPickItem {
     label: string;
@@ -60,7 +41,7 @@ function buildCommand(command: string): string {
 
 async function focusActiveInstance(): Promise<boolean> {
     for (const openTerminal of vscode.window.terminals) {
-      if (openTerminal.name === "lazygit") {
+      if (openTerminal.name === "Gitui") {
           openTerminal.show();
           return true;
         }
@@ -69,7 +50,7 @@ async function focusActiveInstance(): Promise<boolean> {
 }
 
 async function execute(shell: string, command: string): Promise<void> {
-    const terminal = vscode.window.createTerminal("lazygit", shell);
+    const terminal = vscode.window.createTerminal("Gitui", shell);
     terminal.show();
     await vscode.commands.executeCommand("workbench.action.terminal.focus");
     await vscode.commands.executeCommand("workbench.action.terminal.moveToEditor");
@@ -98,7 +79,7 @@ async function getRepositoryPathForFile(filepath: string): Promise<undefined | s
     return undefined;
 }
 
-async function getRepositoryPathQuickPick(lazygit_specifier: string = ""): Promise<undefined | string> {
+async function getRepositoryPathQuickPick(Gitui_specifier: string = ""): Promise<undefined | string> {
     const gitExtension = vscode.extensions.getExtension<GitExtension>('vscode.git');
     if (gitExtension === undefined) {
         return undefined;
@@ -120,7 +101,7 @@ async function getRepositoryPathQuickPick(lazygit_specifier: string = ""): Promi
         return a.description.split("\\").length - b.description.split("\\").length;
     })
     const pick = await vscode.window.showQuickPick(options, {
-        title: "Choose repository for lazygit " + lazygit_specifier,
+        title: "Choose repository for Gitui " + Gitui_specifier,
     });
     if (pick === undefined) {
         return undefined;
@@ -128,17 +109,17 @@ async function getRepositoryPathQuickPick(lazygit_specifier: string = ""): Promi
     return pick.description;
 }
 
-async function newLazygit(): Promise<void> {
+async function newGitui(): Promise<void> {
     const repository_path = await getRepositoryPathQuickPick();
     if (repository_path === undefined) {
         return;
     }
-    const command = buildCommand(`lazygit -p ${repository_path}`);
+    const command = buildCommand(`gitui -d ${repository_path}`);
     await execute(getShell(), command);
     return;
 }
 
-async function newFileHistory(): Promise<void> {
+async function newGituiCurrentFile(): Promise<void> {
     if (vscode.window.activeTextEditor == null) {
         return;
     }
@@ -147,45 +128,7 @@ async function newFileHistory(): Promise<void> {
     if (repository_path === undefined) {
         return;
     }
-    const command = buildCommand(`lazygit -p ${repository_path} -f ${filepath}`);
-    await execute(getShell(), command);
-    return;
-}
-
-async function newLog(): Promise<void> {
-    const repository_path = await getRepositoryPathQuickPick("log");
-    if (repository_path === undefined) {
-        return;
-    }
-    const command = buildCommand(`lazygit -p ${repository_path} -f ${repository_path}`);
-    await execute(getShell(), command);
-    return;
-}
-
-async function newLogCurrentFile(): Promise<void> {
-    if (vscode.window.activeTextEditor == null) {
-        return;
-    }
-    const filepath = vscode.window.activeTextEditor.document.fileName;
-    const repository_path = await getRepositoryPathForFile(filepath);
-    if (repository_path === undefined) {
-        return;
-    }
-    const command = buildCommand(`lazygit -p ${repository_path} -f ${repository_path}`);
-    await execute(getShell(), command);
-    return;
-}
-
-async function newLazygitCurrentFile(): Promise<void> {
-    if (vscode.window.activeTextEditor == null) {
-        return;
-    }
-    const filepath = vscode.window.activeTextEditor.document.fileName;
-    const repository_path = await getRepositoryPathForFile(filepath);
-    if (repository_path === undefined) {
-        return;
-    }
-    const command = buildCommand(`lazygit -p ${repository_path}`);
+    const command = buildCommand(`gitui -d ${repository_path}`);
     await execute(getShell(), command);
     return;
 }
