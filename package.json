@@ -1,62 +1,49 @@
 {
-  "name": "lazygit-for-everyone",
-  "publisher": "spacian",
-  "displayName": "lazygit for everyone",
-  "repository": "https://github.com/spacian/lazygit-for-everyone",
-  "description": "A lazygit wrapper for both windows and unix systems",
-  "version": "0.0.4",
+  "name": "vscode-gitui-wrapper",
+  "displayName": "vscode-gitui-wrapper",
+  "description": "Vscode wrapper for gitui.",
+  "version": "0.0.1",
   "engines": {
-    "vscode": "^1.87.0"
+    "vscode": "^1.89.0"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [],
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "lazygit.lazygit",
-        "title": "lazygit: lazygit"
-      },
-      {
-        "command": "lazygit.log",
-        "title": "lazygit: log"
-      },
-      {
-        "command": "lazygit.file_history",
-        "title": "lazygit: file history"
-      },
-      {
-        "command": "lazygit.lazygit_repository_current_file",
-        "title": "lazygit: lazygit for repository of current file"
-      },
-      {
-        "command": "lazygit.log_repository_current_file",
-        "title": "lazygit: log for repository of current file"
+        "command": "vscode-gitui-wrapper.helloWorld",
+        "title": "Hello World"
       }
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
+    "vscode:prepublish": "pnpm run package",
+    "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+    "check-types": "tsc --noEmit",
     "lint": "eslint src --ext ts",
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.87.0",
+    "@types/vscode": "^1.89.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
-    "@typescript-eslint/eslint-plugin": "^7.0.2",
-    "@typescript-eslint/parser": "^7.0.2",
-    "eslint": "^8.56.0",
-    "typescript": "^5.3.3",
-    "@vscode/test-cli": "^0.0.6",
-    "@vscode/test-electron": "^2.3.9"
-  },
-  "extensionDependencies": [
-    "vscode.git"
-  ]
+    "@typescript-eslint/eslint-plugin": "^7.11.0",
+    "@typescript-eslint/parser": "^7.11.0",
+    "eslint": "^8.57.0",
+    "esbuild": "^0.21.4",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.4.5",
+    "@vscode/test-cli": "^0.0.9",
+    "@vscode/test-electron": "^2.4.0"
+  }
 }
