@@ -1,6 +1,6 @@
 import { version } from "os";
 import * as vscode from "vscode";
-import { GitExtension } from '../typings/git';
+import { GitExtension } from './typings/git';
 
 export async function openGitui(): Promise<void> {
     if (!(await focusActiveInstance())) {
