@@ -85,7 +85,7 @@ async function getRepositoryPathQuickPick(Gitui_specifier: string = ""): Promise
         return undefined;
     }
     const git = gitExtension.exports.getAPI(1);
-    const options = git.repositories.map((item) => {
+    const options = git.repositories.map((item: { rootUri: { fsPath: string; }; }) => {
         return new GitRepositoryQP(
         item.rootUri.fsPath.split("\\").pop()!.split("/").pop()!,
         item.rootUri.fsPath,
@@ -97,7 +97,7 @@ async function getRepositoryPathQuickPick(Gitui_specifier: string = ""): Promise
     if (options.length === 1) {
         return options[0].description;
     }
-    options.sort((a, b) => {
+    options.sort((a: GitRepositoryQP, b: GitRepositoryQP) => {
         return a.description.split("\\").length - b.description.split("\\").length;
     })
     const pick = await vscode.window.showQuickPick(options, {
